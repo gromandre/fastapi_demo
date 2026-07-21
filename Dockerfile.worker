@@ -10,4 +10,4 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements-worker.txt .
 RUN pip install --no-cache-dir -r requirements-worker.txt
 COPY . .
-CMD ["celery", "-A", "celery_app:celery_app", "worker", "--loglevel=info", "--pool=solo", "--without-mingle", "--without-gossip"]
+CMD ["celery", "-A", "app.integrations.celery:celery_app", "worker", "--loglevel=info", "--pool=solo", "--without-mingle", "--without-gossip"]

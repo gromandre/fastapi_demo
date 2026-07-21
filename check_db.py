@@ -1,6 +1,9 @@
 import asyncio
+
 from sqlalchemy import text
-from database import engine
+
+from app.database.session import engine
+
 
 async def check_connection():
     async with engine.connect() as conn:
@@ -8,6 +11,7 @@ async def check_connection():
         value = result.scalar_one()
     await engine.dispose()
     return value
+
 
 if __name__ == "__main__":
     print(asyncio.run(check_connection()))

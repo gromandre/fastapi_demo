@@ -2,8 +2,10 @@ from datetime import date
 
 from pydantic import BaseModel, ConfigDict
 
+
 class ErrorResponse(BaseModel):
     detail: str
+
 
 class DocumentUploadResponse(BaseModel):
     id: int
@@ -20,6 +22,7 @@ class DocumentUploadResponse(BaseModel):
         }
     )
 
+
 class DocumentDeleteResponse(BaseModel):
     id: int
     msg: str
@@ -32,6 +35,7 @@ class DocumentDeleteResponse(BaseModel):
             }
         }
     )
+
 
 class DocumentAnalyseResponse(BaseModel):
     document_id: int
@@ -47,6 +51,7 @@ class DocumentAnalyseResponse(BaseModel):
             }
         }
     )
+
 
 class DocumentTextResponse(BaseModel):
     document_id: int
