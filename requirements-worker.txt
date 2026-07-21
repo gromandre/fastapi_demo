@@ -1,0 +1,7 @@
+celery
+minio
+pytesseract
+Pillow
+SQLAlchemy
+psycopg[binary]
+python-dotenv

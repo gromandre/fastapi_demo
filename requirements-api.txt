@@ -1,0 +1,7 @@
+fastapi[standard]
+SQLAlchemy
+asyncpg
+python-dotenv
+minio
+celery
+alembic
