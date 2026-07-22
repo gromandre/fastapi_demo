@@ -20,5 +20,3 @@ app = FastAPI(lifespan=lifespan)
 register_exception_handlers(app)
 app.include_router(documents_router)
 app.include_router(health_router)
-
-# тест для гита
