@@ -6,10 +6,15 @@ from app.schemas.documents import (
     ErrorResponse,
 )
 
+from app.schemas.health import CheckHealthResponse
+
 __all__ = (
     "DocumentAnalyseResponse",
     "DocumentDeleteResponse",
     "DocumentTextResponse",
     "DocumentUploadResponse",
     "ErrorResponse",
+    "CheckHealthResponse",
 )
+
+

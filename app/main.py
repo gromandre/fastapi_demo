@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from app.core.exception_handlers import register_exception_handlers
 from app.database.session import engine
 from app.routers.documents import router as documents_router
+from app.routers.health import router as health_router
 
 
 @asynccontextmanager
@@ -18,3 +19,4 @@ async def lifespan(_app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 register_exception_handlers(app)
 app.include_router(documents_router)
+app.include_router(health_router)
