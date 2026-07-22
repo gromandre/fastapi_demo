@@ -1,5 +1,5 @@
-from app.services.documents.analyse import analyse_document
-from app.services.documents.delete import delete_document
+from app.services.documents.analyse import document_analyse_service
+from app.services.documents.delete import document_delete_service
 from app.services.documents.errors import (
     DocumentNotFoundError,
     DocumentPersistenceError,
@@ -9,8 +9,8 @@ from app.services.documents.errors import (
     TaskBrokerUnavailableError,
     UnsupportedDocumentTypeError,
 )
-from app.services.documents.read import get_document_text
-from app.services.documents.upload import upload_document
+from app.services.documents.read import document_text_service
+from app.services.documents.upload import document_upload_service
 
 __all__ = (
     "DocumentNotFoundError",
@@ -20,8 +20,8 @@ __all__ = (
     "StorageUnavailableError",
     "TaskBrokerUnavailableError",
     "UnsupportedDocumentTypeError",
-    "analyse_document",
-    "delete_document",
-    "get_document_text",
-    "upload_document",
+    "document_analyse_service",
+    "document_delete_service",
+    "document_text_service",
+    "document_upload_service",
 )

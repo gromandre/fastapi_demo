@@ -12,10 +12,10 @@ from app.schemas import (
     ErrorResponse,
 )
 from app.services.documents import (
-    analyse_document,
-    delete_document,
-    get_document_text,
-    upload_document,
+    document_analyse_service,
+    document_delete_service,
+    document_text_service,
+    document_upload_service,
 )
 
 router = APIRouter(tags=["documents"])
@@ -37,19 +37,14 @@ DatabaseSession = Annotated[AsyncSession, Depends(get_db)]
 async def upload_doc(
     file: UploadFile,
     session: DatabaseSession,
-):
-    document = await upload_document(
+) -> DocumentUploadResponse:
+    return await document_upload_service.upload(
         content=file.file,
         filename=file.filename,
         content_type=file.content_type,
         size=file.size,
         session=session,
     )
-    return {
-        "id": document.id,
-        "path": document.path,
-        "date": document.date,
-    }
 
 
 @router.delete(
@@ -65,9 +60,11 @@ async def upload_doc(
 async def doc_delete(
     document_id: int,
     session: DatabaseSession,
-):
-    await delete_document(document_id=document_id, session=session)
-    return {"id": document_id, "msg": "Document deleted"}
+) -> DocumentDeleteResponse:
+    return await document_delete_service.delete(
+        document_id=document_id,
+        session=session,
+    )
 
 
 @router.post(
@@ -83,16 +80,11 @@ async def doc_delete(
 async def analyse_document_route(
     document_id: int,
     session: DatabaseSession,
-):
-    task_id = await analyse_document(
+) -> DocumentAnalyseResponse:
+    return await document_analyse_service.analyse(
         document_id=document_id,
         session=session,
     )
-    return {
-        "document_id": document_id,
-        "task_id": task_id,
-        "status": "queued",
-    }
 
 
 @router.get(
@@ -109,13 +101,8 @@ async def analyse_document_route(
 async def get_text(
     document_id: int,
     session: DatabaseSession,
-):
-    document_text = await get_document_text(
+) -> DocumentTextResponse:
+    return await document_text_service.get_text(
         document_id=document_id,
         session=session,
     )
-    return {
-        "document_id": document_id,
-        "text_id": document_text.id,
-        "text": document_text.text,
-    }
