@@ -37,3 +37,6 @@ jobs:
 
       - name: Проверить форматирование
         run: ruff format --check .
+
+      - name: Запустить тесты
+          run: pytest -v
