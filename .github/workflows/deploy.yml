@@ -87,5 +87,11 @@ jobs:
              git pull --ff-only origin main
              docker compose -f compose.prod.yaml pull
              docker compose -f compose.prod.yaml up -d
-             curl --fail --retry 10 --retry-delay 3 http://127.0.0.1:8000/healthcheck
+             curl \
+              --fail \
+              --retry 20 \
+              --retry-delay 3 \
+              --retry-max-time 120 \
+              --retry-all-errors \
+              http://127.0.0.1:8000/healthcheck
              docker compose -f compose.prod.yaml ps'
