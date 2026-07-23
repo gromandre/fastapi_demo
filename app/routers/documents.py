@@ -106,5 +106,3 @@ async def get_text(
         document_id=document_id,
         session=session,
     )
-
-

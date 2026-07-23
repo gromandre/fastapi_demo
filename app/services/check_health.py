@@ -7,4 +7,5 @@ class CheckHealthService:
             status=True,
         )
 
+
 check_health_service = CheckHealthService()

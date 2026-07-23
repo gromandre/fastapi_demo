@@ -67,6 +67,3 @@ class DocumentTextResponse(BaseModel):
             }
         }
     )
-
-
-

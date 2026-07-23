@@ -13,7 +13,7 @@ router = APIRouter(tags=["health"])
     summary="Проверить работу сервиса",
     responses={
         500: {"model": ErrorResponse, "description": "Сервис недоступен"},
-    }
+    },
 )
 def check_service() -> CheckHealthResponse:
     return check_health_service.check()
