@@ -5,11 +5,46 @@ on:
 
 permissions:
   contents: read
+  packages: write
 
 jobs:
-  connection:
-    name: Check VPS connection
+  publish:
+    name: Publish Docker images
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Получить код
+        uses: actions/checkout@v7
+
+      - name: Войти в GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Собрать и опубликовать API
+        run: |
+          docker build \
+            -f Dockerfile.api \
+            -t ghcr.io/gromandre/fastapi-demo-api:latest \
+            -t ghcr.io/gromandre/fastapi-demo-api:${{ github.sha }} \
+            .
+          docker push --all-tags ghcr.io/gromandre/fastapi-demo-api
+
+      - name: Собрать и опубликовать Worker
+        run: |
+          docker build \
+            -f Dockerfile.worker \
+            -t ghcr.io/gromandre/fastapi-demo-worker:latest \
+            -t ghcr.io/gromandre/fastapi-demo-worker:${{ github.sha }} \
+            .
+          docker push --all-tags ghcr.io/gromandre/fastapi-demo-worker
+
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: publish
 
     steps:
       - name: Настроить SSH
@@ -24,7 +59,21 @@ jobs:
           printf '%s %s\n' "$VPS_HOST" "$VPS_HOST_KEY" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/known_hosts
 
-      - name: Проверить подключение
+      - name: Авторизовать VPS в GHCR
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_USER: ${{ github.actor }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          printf '%s' "$GHCR_TOKEN" |
+            ssh \
+              -i ~/.ssh/deploy_key \
+              -o BatchMode=yes \
+              "$VPS_USER@$VPS_HOST" \
+              "docker login ghcr.io -u '$GHCR_USER' --password-stdin"
+
+      - name: Развернуть приложение
         env:
           VPS_HOST: ${{ secrets.VPS_HOST }}
           VPS_USER: ${{ secrets.VPS_USER }}
@@ -33,4 +82,10 @@ jobs:
             -i ~/.ssh/deploy_key \
             -o BatchMode=yes \
             "$VPS_USER@$VPS_HOST" \
-            'whoami && hostname && docker ps --format "table {{.Names}}\t{{.Status}}"'
+            'set -e
+             cd /opt/fastapi_demo
+             git pull --ff-only origin main
+             docker compose -f compose.prod.yaml pull
+             docker compose -f compose.prod.yaml up -d
+             curl --fail --retry 10 --retry-delay 3 http://127.0.0.1:8000/healthcheck
+             docker compose -f compose.prod.yaml ps'
