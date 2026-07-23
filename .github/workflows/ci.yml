@@ -39,4 +39,4 @@ jobs:
         run: ruff format --check .
 
       - name: Запустить тесты
-        run: pytest -v
+        run: python -m pytest -v
