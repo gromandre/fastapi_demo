@@ -40,3 +40,18 @@ jobs:
 
       - name: Запустить тесты
         run: python -m pytest -v
+
+  docker:
+    name: Docker build
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Получить код
+        uses: actions/checkout@v7
+
+      - name: Собрать API-образ
+        run: docker build -f Dockerfile.api -t fastapi-demo-api:ci .
+
+      - name: Собрать Worker-образ
+        run: docker build -f Dockerfile.worker -t fastapi-demo-worker:ci .
