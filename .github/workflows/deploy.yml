@@ -45,7 +45,7 @@ jobs:
           docker build \
             -f Dockerfile.api \
             -t ghcr.io/gromandre/fastapi-demo-api:latest \
-            -t ghcr.io/gromandre/fastapi-demo-api:${{ $DEPLOY_SHA }} \
+            -t ghcr.io/gromandre/fastapi-demo-api:$DEPLOY_SHA \
             .
           docker push --all-tags ghcr.io/gromandre/fastapi-demo-api
 
@@ -54,7 +54,7 @@ jobs:
           docker build \
             -f Dockerfile.worker \
             -t ghcr.io/gromandre/fastapi-demo-worker:latest \
-            -t ghcr.io/gromandre/fastapi-demo-worker:${{ $DEPLOY_SHA }} \
+            -t ghcr.io/gromandre/fastapi-demo-worker:$DEPLOY_SHA \
             .
           docker push --all-tags ghcr.io/gromandre/fastapi-demo-worker
 
